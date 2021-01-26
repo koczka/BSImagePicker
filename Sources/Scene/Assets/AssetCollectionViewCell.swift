@@ -77,6 +77,7 @@ class AssetCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(selectionOverlayView)
         contentView.addSubview(selectionView)
 
+        
         // Add constraints
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
