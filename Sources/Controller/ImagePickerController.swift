@@ -32,6 +32,7 @@ import Photos
     public var doneButton: UIBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
     public var cancelButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
     public var albumButton: UIButton = UIButton(type: .custom)
+    public var previouslySelected: [PHAsset]?
     public var selectedAssets: [PHAsset] {
         get {
             return assetStore.assets
@@ -84,6 +85,14 @@ import Photos
 
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let previous = self.previouslySelected {
+            assetsViewController.previouslySelected = previous
+        }
     }
 
     public override func viewDidLoad() {

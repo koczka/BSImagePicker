@@ -28,6 +28,7 @@ The photo cell.
 */
 class AssetCollectionViewCell: UICollectionViewCell {
     let imageView: UIImageView = UIImageView(frame: .zero)
+    var identifier: String = ""
     var settings: Settings! {
         didSet { selectionView.settings = settings }
     }
@@ -103,6 +104,7 @@ class AssetCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
+        setPreviouslySelected(false)
         selectionIndex = nil
     }
     
@@ -117,6 +119,14 @@ class AssetCollectionViewCell: UICollectionViewCell {
         } else {
             self.selectionView.alpha = 0.0
             self.selectionOverlayView.alpha = 0.0
+        }
+    }
+    
+    func setPreviouslySelected(_ selected: Bool) {
+        if selected {
+            self.imageView.alpha = 0.2
+        } else {
+            self.imageView.alpha = 1.0
         }
     }
 }
