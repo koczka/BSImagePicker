@@ -92,6 +92,7 @@ import Photos
         
         if let previous = self.previouslySelected {
             assetsViewController.previouslySelected = previous
+            print("pickercontroller", previous.count)
         }
     }
 
@@ -151,6 +152,10 @@ import Photos
 
         if let firstAlbum = albums.first {
             select(album: firstAlbum)
+        }
+        
+        if let previous = self.previouslySelected {
+            assetsViewController.previouslySelected = previous
         }
     }
 

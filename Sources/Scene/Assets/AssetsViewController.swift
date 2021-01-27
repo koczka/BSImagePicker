@@ -31,8 +31,20 @@ protocol AssetsViewControllerDelegate: class {
 
 class AssetsViewController: UIViewController {
     weak var delegate: AssetsViewControllerDelegate?
-    var previouslySelected: [PHAsset]?
-    var previouslySelectedIds: [String]?
+    var previouslySelected: [PHAsset] = [] {
+        didSet {
+            dataSource.previouslySelected = previouslySelected
+            
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                self.collectionView.performBatchUpdates({ [weak self] in
+                    let visibleItems = self?.collectionView.indexPathsForVisibleItems ?? []
+                    self?.collectionView.reloadItems(at: visibleItems)
+                }, completion: { (_) in
+                })
+            }
+        }
+    }
     
     var settings: Settings! {
         didSet { dataSource.settings = settings }
@@ -69,10 +81,6 @@ class AssetsViewController: UIViewController {
         PHPhotoLibrary.shared().register(self)
 
         view = collectionView
-        
-        if let previous = previouslySelected {
-            previouslySelectedIds = previous.map { $0.localIdentifier }
-        }
 
         // Set an empty title to get < back button
         title = " "
@@ -95,10 +103,6 @@ class AssetsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if let previous = self.previouslySelected {
-            previouslySelectedIds = previous.map { $0.localIdentifier }
-        }
         
         updateCollectionViewLayout(for: traitCollection)
     }
@@ -184,17 +188,6 @@ class AssetsViewController: UIViewController {
 }
 
 extension AssetsViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let assetCell = cell as? AssetCollectionViewCell else { return }
-        guard let prevIds = self.previouslySelectedIds else { return }
-        
-        let identifier = assetCell.identifier
-        
-        if prevIds.contains(identifier) {
-            assetCell.setPreviouslySelected(true)
-        }
-    }
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectionFeedback.selectionChanged()
 

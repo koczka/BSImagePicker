@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "BSImagePickerBFK"
-  s.version          = "3.4.2"
+  s.version          = "3.4.3"
   s.summary          = "BSImagePickerBFK is a custom fork based off Joakim Gyllström's work"
   s.description      = <<-DESC
   A multiple image picker.

@@ -38,6 +38,8 @@ class AssetsCollectionViewDataSource : NSObject, UICollectionViewDataSource {
             imageManager.stopCachingImagesForAllAssets()
         }
     }
+    
+    var previouslySelected: [PHAsset] = []
 
     private let imageManager = PHCachingImageManager()
     private let durationFormatter = DateComponentsFormatter()
@@ -84,6 +86,10 @@ class AssetsCollectionViewDataSource : NSObject, UICollectionViewDataSource {
         loadImage(for: asset, in: cell)
         
         cell.selectionIndex = store.index(of: asset)
+        
+        if previouslySelected.contains(asset) {
+            cell.setPreviouslySelected(true)
+        }
         
         return cell
     }

@@ -30,7 +30,12 @@ class AssetCollectionViewCell: UICollectionViewCell {
     let imageView: UIImageView = UIImageView(frame: .zero)
     var identifier: String = ""
     var settings: Settings! {
-        didSet { selectionView.settings = settings }
+        didSet {
+            previousSelectionView.settings = settings
+            previousSelectionView.settings.theme.selectionStyle = .checked
+            selectionView.settings = settings
+            selectionView.settings.theme.selectionStyle = .numbered
+        }
     }
     var selectionIndex: Int? {
         didSet { selectionView.selectionIndex = selectionIndex }
@@ -62,6 +67,7 @@ class AssetCollectionViewCell: UICollectionViewCell {
     
     private let selectionOverlayView: UIView = UIView(frame: .zero)
     private let selectionView: SelectionView = SelectionView(frame: .zero)
+    private let previousSelectionView: SelectionView = SelectionView(frame: .zero)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -73,10 +79,15 @@ class AssetCollectionViewCell: UICollectionViewCell {
         selectionOverlayView.backgroundColor = UIColor.systemOverlayColor
         selectionOverlayView.translatesAutoresizingMaskIntoConstraints = false
         selectionView.translatesAutoresizingMaskIntoConstraints = false
+        // prev selection view
+        previousSelectionView.translatesAutoresizingMaskIntoConstraints = false
+
         contentView.addSubview(imageView)
         contentView.addSubview(selectionOverlayView)
+        contentView.addSubview(previousSelectionView)
         contentView.addSubview(selectionView)
-
+        
+        self.previousSelectionView.alpha = 0.0
         
         // Add constraints
         NSLayoutConstraint.activate([
@@ -91,7 +102,11 @@ class AssetCollectionViewCell: UICollectionViewCell {
             selectionView.heightAnchor.constraint(equalToConstant: 25),
             selectionView.widthAnchor.constraint(equalToConstant: 25),
             selectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
-            selectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)
+            selectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            previousSelectionView.heightAnchor.constraint(equalToConstant: 25),
+            previousSelectionView.widthAnchor.constraint(equalToConstant: 25),
+            previousSelectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+            previousSelectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
         ])
 
         updateAlpha(isSelected)
@@ -125,9 +140,11 @@ class AssetCollectionViewCell: UICollectionViewCell {
     
     func setPreviouslySelected(_ selected: Bool) {
         if selected {
-            self.imageView.alpha = 0.2
+            self.previousSelectionView.alpha = 1.0
+            self.selectionOverlayView.alpha = 0.3
         } else {
-            self.imageView.alpha = 1.0
+            self.previousSelectionView.alpha = 0.0
+            self.selectionOverlayView.alpha = 0.0
         }
     }
 }
